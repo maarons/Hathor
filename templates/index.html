@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Hathor{% endblock %}
+
+{% block content %}
+<h1>Your TV series:</h1>
+{% for t in tv_series %}
+  <a href="/tv_series/?id={{ t.id }}" class="button wide">{{ t.title }}</a>
+{% endfor %}
+<a href="/tv_series/new/" class="button top-margin">New</a>
+<a href="#" id="update-all" class="button top-margin right">
+  Update all TV series info
+</a>
+{% include "episodes/ready_and_next.html" %}
+
+{% include "tv_series/_update.html" %}
+
+{% endblock %}
+
+{% block script %}
+<script src="/static/script/update.js"></script>
+<script src="/static/script/wikipedia/lib.js"></script>
+{% endblock %}
+
+<!-- vim: set filetype=jinja sw=2 sts=2 : -->

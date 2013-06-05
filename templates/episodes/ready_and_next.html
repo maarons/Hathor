@@ -1,0 +1,18 @@
+{% import "episodes/_episode.html" as e %}
+
+<div class="reload" data-url="/episodes/ready_and_next/">
+  <h2>Ready episodes:</h2>
+  <div class="episodes">
+    {% for (episode, c, ) in ready_episodes %}
+      {{ e.episode(episode, full = True, other = c) }}
+    {% endfor %}
+  </div>
+  <h2>Next episodes:</h2>
+  <div class="episodes">
+    {% for (episode, _, ) in next_episodes %}
+      {{ e.episode(episode, full = True) }}
+    {% endfor %}
+  </div>
+</div>
+
+<!-- vim: set filetype=jinja sw=2 sts=2 : -->

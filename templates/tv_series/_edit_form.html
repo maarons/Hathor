@@ -1,0 +1,43 @@
+<input type="hidden" name="provider_metadata"
+       id="provider_metadata"
+       value="{{ tv_series.get_provider_metadata() }}"/>
+<div>
+  <label for="title">Title:</label>
+  <select name="provider_type" class="right">
+  {% for p in providers %}
+    <option
+      value="{{ p.type }}"
+      {% if p.type == tv_series.provider_type %}selected="selected"{% endif %}
+    >{{ p.name }}</option>
+  {% endfor %}
+  </select>
+  <input type="text" name="title" class="wide" value="{{ tv_series.title }}"
+         id="tv_series_title"/>
+</div>
+<div>
+  <h2>Provider data:</h2>
+  <div>
+    <label for="wikipedia_episodes_article">Episodes list article:</label>
+    <input type="text" name="wikipedia_episodes_article"
+           id="wikipedia_episodes_article"/>
+    <input type="button" class="button" value="reset"
+           id="wikipedia_episodes_article_reset"/>
+  <div>
+  <p>Most likely following options can be left empty:</p>
+  <div>
+    <label for="wikipedia_season_keyword">Season keyword:</label>
+    <input type="text" name="wikipedia_season_keyword"
+           id="wikipedia_season_keyword">
+    (“season” and “series” are recognised by default)
+  </div>
+  <div>
+    <label for="wikipedia_episodes_keyword">Episodes keyword:</label>
+    <input type="text" name="wikipedia_episodes_keyword"
+           id="wikipedia_episodes_keyword">
+    (“episodes”, “list of episodes” and “episode list” are recognised by
+    default)
+  </div>
+</div>
+<input id="real-submit" type="submit" value="" class="hide"/>
+
+<!-- vim: set filetype=jinja sw=2 sts=2 : -->

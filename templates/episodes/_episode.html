@@ -1,0 +1,53 @@
+{% macro episode(e, full = False, other = None) %}
+  <h3 id="episode-{{ e.id }}-header">
+    {% if full %}
+      {{ e.tv_series().title }} —
+      {{ e.season_and_number() }} —
+    {% else %}
+      {{ e.number }}.
+    {% endif %}
+    {{ e.title }}
+    {% if other %}
+      (and {{ other }} other episode{% if other > 1 %}s{% endif %})
+    {% endif %}
+    {% if not full %}
+      {% if e.available() %}
+        <span class="marker right {% if e.watched %}hide{% endif %}">
+          not seen
+        </span>
+      {% else %}
+        <span class="right">not available</span>
+      {% endif %}
+    {% endif %}
+  </h3>
+  <div id="episode-{{ e.id }}-body" class="episode-body">
+    {% if e.available() %}
+      <p>
+        <a
+          href="#"
+          data-episode-id="{{ e.id }}"
+          class="button unwatch {% if not e.watched %}hide{% endif %}"
+        >I haven’t seen this episode</a>
+        <a
+          href="#"
+          data-episode-id="{{ e.id }}"
+          class="button watch {% if e.watched %}hide{% endif %}"
+        >I’ve seen this episode</a>
+      </p>
+    {% endif %}
+    <p>Episode number: {{ e.number }}</p>
+    <p>
+      {% if e.available() %}
+        Aired on:
+      {% else %}
+        Will air on:
+      {% endif %}
+      {{ e.get_air_date() }}
+    </p>
+    {% if e.summary %}
+      <p>Summary: {{ e.summary }}</p>
+    {% endif %}
+  </div>
+{% endmacro %}
+
+<!-- vim: set filetype=jinja sw=2 sts=2 : -->
