@@ -51,7 +51,13 @@ def safe_access(fn):
 
             cherrypy.request.session = utils.session.Session()
 
-            return fn(*args, **kwargs)
+            try:
+                ret = fn(*args, **kwargs)
+                cherrypy.request.session.close()
+                return ret
+            except Exception as e:
+                cherrypy.request.session.close()
+                raise e
         except:
             if config.env == "production":
                 return t.render("login")

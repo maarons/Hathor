@@ -67,6 +67,8 @@ class Season(Base):
 
         for episode_number in updated_episodes:
             episode = updated_episodes[episode_number]
+            if not episode["air_date"]:
+                continue
             air_date = utils.time.from_string(episode["air_date"], "%Y.%m.%d")
             if episode_number not in current_episodes:
                 current_episodes[episode_number] = Episode.new(
