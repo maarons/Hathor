@@ -292,7 +292,11 @@ function WikipediaLib(episodes_article, season_keyword, episodes_keyword,
     var seasonData = {};
 
     function finalize() {
-      callback(new TvSeries(seasonData));
+      if (isSeasonDataEmpty()) {
+        progress_error();
+      } else {
+        callback(new TvSeries(seasonData));
+      }
     }
 
     function updateSeasonData(number, episodes) {
@@ -331,13 +335,19 @@ function WikipediaLib(episodes_article, season_keyword, episodes_keyword,
 
     // Episodes data without a season section
     function findOneSeason(article) {
+      var success = false;
       for (section in article.sections) {
         if (episodeSection(section)) {
           var episodes = findTemplates(EpisodeList, article.sections[section]);
           updateSeasonData(1, episodes);
+          success = true;
         }
       }
-      finalize();
+      if (!success) {
+        progress_error();
+      } else {
+        finalize();
+      }
     }
 
     function findBySeasons(article) {
