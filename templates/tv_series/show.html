@@ -7,7 +7,7 @@
 <a href="/" class="button">Back</a>
 <a href="/tv_series/edit/?id={{ tv_series.id }}" class="button right">Edit</a>
 <h1>{{ tv_series.title }}</h1>
-{% for s in tv_series.seasons() %}
+{% for s in tv_series.seasons %}
   <a href="#season-{{ s.id }}" class="button wide">Season {{ s.number }}</a>
 {% endfor %}
 
@@ -16,7 +16,7 @@
   Update TV series info
 </a>
 
-{% for s in tv_series.seasons() %}
+{% for s in tv_series.seasons %}
   <h2 id="season-{{ s.id }}">
     Season {{ s.number }}
     <a href="/seasons/watch/?id={{ s.id }}" class="button right">
@@ -24,7 +24,7 @@
     </a>
   </h2>
   <div class="season episodes">
-    {% for episode in s.episodes() %}
+    {% for episode in s.episodes %}
       {{ e.episode(episode) }}
     {% endfor %}
   </div>

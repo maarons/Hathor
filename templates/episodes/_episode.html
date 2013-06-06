@@ -1,7 +1,7 @@
 {% macro episode(e, full = False, other = None) %}
   <h3 id="episode-{{ e.id }}-header">
     {% if full %}
-      {{ e.tv_series().title }} —
+      {{ e.season.tv_series.title }} —
       {{ e.season_and_number() }} —
     {% else %}
       {{ e.number }}.

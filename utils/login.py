@@ -6,15 +6,15 @@ import hmac
 
 import templates as t
 from utils.log import log
-from config import fb_app_id
 import config
+import utils.session
 
 def safe_access(fn):
     @cherrypy.expose
     def wrapped(*args, **kwargs):
         cherrypy.request.fb_user_id = None
         try:
-            name = "fbsr_" + fb_app_id
+            name = "fbsr_" + config.fb_app_id
             if name not in cherrypy.request.cookie:
                 log("Cookie not present, redirecting to login.")
                 return t.render("login")
@@ -48,6 +48,8 @@ def safe_access(fn):
             if data["user_id"] not in config.fb_allowed_user_ids:
                 log("Unauthorized user: {}", data["user_id"])
                 return t.render("unauthorized")
+
+            cherrypy.request.session = utils.session.Session()
 
             return fn(*args, **kwargs)
         except:

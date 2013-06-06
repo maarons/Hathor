@@ -1,44 +1,49 @@
 import cherrypy
 from sqlalchemy import Sequence, Column
-from sqlalchemy import Integer, String
-from time import time
+from sqlalchemy.dialects.postgresql import BIGINT, TEXT, INTEGER
+from sqlalchemy.types import DateTime
+from sqlalchemy.orm import relationship, backref
 
 from model.Base import Base
 from model.Season import Season
-from utils.session import with_session, add_and_commit
+import utils.time
 
 class TvSeries(Base):
     __tablename__ = "tv_series"
 
     id = Column(
-        Integer,
+        INTEGER,
         Sequence("tv_series_id_seq"),
         primary_key = True,
     )
 
-    title = Column(String, nullable = False)
-    fb_user_id = Column(Integer, nullable = False)
-    last_update_time = Column(Integer, nullable = False)
-    provider_type = Column(Integer, nullable = False)
-    provider_metadata = Column(String, nullable = False)
+    title = Column(TEXT, nullable = False)
+    fb_user_id = Column(BIGINT, nullable = False)
+    last_update_time = Column(DateTime(True), nullable = False)
+    provider_type = Column(INTEGER, nullable = False)
+    provider_metadata = Column(TEXT, nullable = False)
+
+    seasons = relationship(
+        "Season",
+        cascade = "delete",
+        single_parent = True,
+        order_by = "Season.number",
+        backref = backref("tv_series"),
+    )
 
     def __init__(self):
         self.title = ""
 
     # Always use this to query for TvSeries to ensure fb_user_id is set.
     @staticmethod
-    @with_session()
-    def all_query(session = None):
-        return session.query(TvSeries).filter(
+    def all_query():
+        return cherrypy.request.session.query(TvSeries).filter(
             TvSeries.fb_user_id == cherrypy.request.fb_user_id,
         ).order_by(TvSeries.title).order_by(TvSeries.id)
 
     @staticmethod
-    @with_session()
-    def get(tv_series_id, session = None):
-        return TvSeries.all_query(use_session = session).filter(
-            TvSeries.id == tv_series_id,
-        ).one()
+    def get(tv_series_id):
+        return TvSeries.all_query().filter(TvSeries.id == tv_series_id).one()
 
     @staticmethod
     def all():
@@ -51,28 +56,22 @@ class TvSeries(Base):
         tv_series.fb_user_id = cherrypy.request.fb_user_id
         tv_series.provider_type = provider_type
         tv_series.provider_metadata = provider_metadata
-        tv_series.last_update_time = int(time())
-        return add_and_commit(tv_series)
+        tv_series.last_update_time = utils.time.now()
+        cherrypy.request.session.add(tv_series)
+        cherrypy.request.session.commit()
+        return tv_series
 
-    @with_session(commit = True)
-    def delete(self, session = None):
-        seasons = self.seasons(use_session = session)
-        for season in seasons:
-            season.delete(use_session = session)
-        session.delete(self)
+    def delete(self):
+        cherrypy.request.session.delete(self)
+        cherrypy.request.session.commit()
 
     def update(self, title, provider_type, provider_metadata):
         self.title = title
         self.provider_type = provider_type
         self.provider_metadata = provider_metadata
-        self.last_update_time = int(time())
-        return add_and_commit(self)
-
-    @with_session()
-    def seasons(self, session = None):
-        return Season.all_query(use_session = session).filter(
-            Season.tv_series_id == self.id,
-        ).all()
+        self.last_update_time = utils.time.now()
+        cherrypy.request.session.add(self)
+        cherrypy.request.session.commit()
 
     def get_provider_metadata(self):
         if self.provider_metadata:
@@ -82,7 +81,7 @@ class TvSeries(Base):
 
     def update_episodes_info(self, data):
         current_seasons = {}
-        for season in self.seasons():
+        for season in self.seasons:
             current_seasons[season.number] = season
 
         for season_number in data:

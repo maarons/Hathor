@@ -1,46 +1,43 @@
 import cherrypy
-from sqlalchemy import Sequence, Column, UniqueConstraint
-from sqlalchemy import Integer
-from datetime import datetime
+from sqlalchemy import Sequence, Column, UniqueConstraint, ForeignKey
+from sqlalchemy.dialects.postgresql import INTEGER
+from sqlalchemy.orm import relationship, backref
 
 from model.Base import Base
 from model.Episode import Episode
-from utils.session import with_session, add_and_commit
+import utils.time
 
 class Season(Base):
     __tablename__ = "seasons"
 
     id = Column(
-        Integer,
+        INTEGER,
         Sequence("seasons_id_seq"),
         primary_key = True,
     )
 
-    fb_user_id = Column(Integer, nullable = False)
-    number = Column(Integer, nullable = False)
-    tv_series_id = Column(Integer, nullable = False)
+    number = Column(INTEGER, nullable = False)
+    tv_series_id = Column(INTEGER, ForeignKey("tv_series.id"), nullable = False)
+
+    episodes = relationship(
+        "Episode",
+        cascade = "delete",
+        single_parent = True,
+        order_by = "Episode.number",
+        backref = backref("season"),
+    )
 
     __table_args__ = (
         UniqueConstraint(
-            "fb_user_id",
             "tv_series_id",
             "number",
             name = "_season_unique",
         ),
     )
 
-    # Always use this to query for Seasons to ensure fb_user_id is set.
     @staticmethod
-    @with_session()
-    def all_query(session = None):
-        return session.query(Season).filter(
-            Season.fb_user_id == cherrypy.request.fb_user_id,
-        ).order_by(Season.number).order_by(Season.id)
-
-    @staticmethod
-    @with_session()
-    def get(season_id, session = None):
-        return Season.all_query(use_session = session).filter(
+    def get(season_id):
+        return cherrypy.request.session.query(Season).filter(
             Season.id == season_id,
         ).one()
 
@@ -50,29 +47,17 @@ class Season(Base):
         season.tv_series_id = tv_series.id
         season.number = number
         season.fb_user_id = cherrypy.request.fb_user_id
-        return add_and_commit(season)
+        cherrypy.request.session.add(season)
+        cherrypy.request.session.commit()
+        return season
 
-    @with_session(commit = True)
-    def delete(self, session = None):
-        episodes = self.episodes(use_session = session)
-        for episode in episodes:
-            episode.delete(use_session = session)
-        session.delete(self)
-
-    @with_session()
-    def tv_series(self, session = None):
-        from model import TvSeries
-        return TvSeries.get(self.tv_series_id, use_session = session)
-
-    @with_session()
-    def episodes(self, session = None):
-        return Episode.all_query(use_session = session).filter(
-            Episode.season_id == self.id,
-        ).all()
+    def delete(self):
+        cherrypy.request.session.delete(self)
+        cherrypy.request.session.commit()
 
     def update_episodes_info(self, data):
         current_episodes = {}
-        for episode in self.episodes():
+        for episode in self.episodes:
             current_episodes[episode.number] = episode
 
         updated_episodes = {}
@@ -82,10 +67,7 @@ class Season(Base):
 
         for episode_number in updated_episodes:
             episode = updated_episodes[episode_number]
-            air_date = datetime.strptime(
-                episode["air_date"],
-                "%Y.%m.%d",
-            ).date()
+            air_date = utils.time.from_string(episode["air_date"], "%Y.%m.%d")
             if episode_number not in current_episodes:
                 current_episodes[episode_number] = Episode.new(
                     self,
