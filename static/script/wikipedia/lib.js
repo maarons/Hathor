@@ -243,7 +243,7 @@ function WikipediaLib(episodes_article, season_keyword, episodes_keyword,
    * runs given callback on the fetched article.
    */
   function getArticle(title, callback) {
-    var url = "http://en.wikipedia.org/w/api.php?" +
+    var url = "https://en.wikipedia.org/w/api.php?" +
       "format=json&callback=?&" +
       "action=query&prop=revisions&rvprop=content&redirects&titles=";
     $.ajax({
