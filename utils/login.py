@@ -58,6 +58,8 @@ def safe_access(fn):
             except Exception as e:
                 cherrypy.request.session.close()
                 raise e
+        except cherrypy.HTTPRedirect:
+            raise
         except:
             if config.env == "production":
                 return t.render("login")
