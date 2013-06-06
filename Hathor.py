@@ -6,15 +6,15 @@ from cherrypy.process.plugins import PIDFile
 import os
 
 from  controllers import Hathor
-from config import env
+import config
 
 cherrypy.config.update({
     "server.socket_host": "127.0.0.1",
-    "server.socket_port": 8080,
+    "server.socket_port": config.port,
     "tools.gzip.on": True,
 })
 
-if env == "production":
+if config.env == "production":
     cherrypy.config.update({
         "environment": "production",
         "tools.proxy.on": True
