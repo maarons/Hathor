@@ -1,5 +1,6 @@
 {% macro episode(e, full = False, other = None) %}
-  <h3 id="episode-{{ e.id }}-header">
+<section class="episode-{{ e.id }} episode">
+  <h3 class="header">
     {% if full %}
       {{ e.season.tv_series.title }} —
       {{ e.season_and_number() }} —
@@ -12,7 +13,7 @@
     {% endif %}
     {% if not full %}
       {% if e.available() %}
-        <span class="marker right {% if e.watched %}hide{% endif %}">
+        <span class="unseen-marker right {% if e.watched %}hide{% endif %}">
           not seen
         </span>
       {% else %}
@@ -20,7 +21,7 @@
       {% endif %}
     {% endif %}
   </h3>
-  <div id="episode-{{ e.id }}-body" class="episode-body">
+  <div class="body"><div class="wrap">
     {% if e.available() %}
       <p>
         <a
@@ -47,7 +48,8 @@
     {% if e.summary %}
       <p>Summary: {{ e.summary }}</p>
     {% endif %}
-  </div>
+  </div></div>
+</section>
 {% endmacro %}
 
 <!-- vim: set filetype=jinja sw=2 sts=2 : -->

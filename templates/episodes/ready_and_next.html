@@ -2,13 +2,13 @@
 
 <div class="reload" data-url="/episodes/ready_and_next/">
   <h2>Ready episodes:</h2>
-  <div class="episodes">
+  <div class="accordion">
     {% for (episode, c, ) in ready_episodes %}
       {{ e.episode(episode, full = True, other = c) }}
     {% endfor %}
   </div>
   <h2>Next episodes:</h2>
-  <div class="episodes">
+  <div class="accordion">
     {% for (episode, _, ) in next_episodes %}
       {{ e.episode(episode, full = True) }}
     {% endfor %}

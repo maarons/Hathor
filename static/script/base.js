@@ -1,66 +1,63 @@
-var animation_time = 200;
-
-function pretty_ui() {
-  $(".episodes").accordion({
-    collapsible: true,
-    active: false,
-    animate: animation_time,
-  });
-  $(".button").button();
-  $(".episode-body .watch").click(watch_episode);
-  $(".episode-body .unwatch").click(unwatch_episode);
-}
-
-pretty_ui();
+$(document).on("click", ".accordion .header", function(event) {
+  event.preventDefault();
+  var should_show = true;
+  if ($(this).parents("section").hasClass("target")) {
+    should_show = false;
+  }
+  $(".target").removeClass("target");
+  if (should_show) {
+    $(this).parents("section").addClass("target");
+  }
+});
 
 function reload_partial(t) {
   var p = t.parents(".reload");
   var url = p.data("url");
   if (url) {
-    t.parents(".episodes").accordion("option", "active", false);
+    $(".target").removeClass("target");
     var animation_start = $.now();
     $.getJSON(url, function(data) {
       setTimeout(function() {
         p.replaceWith(data);
-        pretty_ui();
-      }, animation_time - ($.now() - animation_start));
+      }, 300 - ($.now() - animation_start));
+      // 0.3s for accordion target animation to complete
     });
     return true;
   }
   return false;
 }
 
-function watch_episode(event) {
+$(document).on("click", ".episode .watch", function(event) {
   event.preventDefault();
   var episode_id = $(this).data("episode-id");
   var button = $(this);
   $.getJSON("/episodes/watch/?id=" + episode_id, function(data) {
     if (data === true) {
       if (!reload_partial(button)) {
-        $("#episode-" + episode_id + "-header .marker").addClass("hide");
-        $("#episode-" + episode_id + "-body .watch").addClass("hide");
-        $("#episode-" + episode_id + "-body .unwatch").removeClass("hide");
+        $(".episode-" + episode_id + " .unseen-marker").addClass("hide");
+        $(".episode-" + episode_id + " .watch").addClass("hide");
+        $(".episode-" + episode_id + " .unwatch").removeClass("hide");
       }
     }
   });
-}
+});
 
-function unwatch_episode(event) {
+$(document).on("click", ".episode .unwatch", function(event) {
   event.preventDefault();
   var episode_id = $(this).data("episode-id");
   var button = $(this);
   $.getJSON("/episodes/unwatch/?id=" + episode_id, function(data) {
     if (data === true) {
       if (!reload_partial(button)) {
-        $("#episode-" + episode_id + "-header .marker").removeClass("hide");
-        $("#episode-" + episode_id + "-body .watch").removeClass("hide");
-        $("#episode-" + episode_id + "-body .unwatch").addClass("hide");
+        $(".episode-" + episode_id + " .unseen-marker").removeClass("hide");
+        $(".episode-" + episode_id + " .watch").removeClass("hide");
+        $(".episode-" + episode_id + " .unwatch").addClass("hide");
       }
     }
   });
-};
+});
 
-$("a.confirm").click(function(event) {
+$(document).on("click", "a.confirm", function(event) {
   if (!confirm("Are you sure?")) {
     event.preventDefault();
   }

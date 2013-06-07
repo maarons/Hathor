@@ -4,9 +4,11 @@
 
 {% block content %}
 <h1>Your TV series:</h1>
-{% for t in tv_series %}
-  <a href="/tv_series/?id={{ t.id }}" class="button wide">{{ t.title }}</a>
-{% endfor %}
+<div class="list">
+  {% for t in tv_series %}
+    <a href="/tv_series/?id={{ t.id }}" class="item">{{ t.title }}</a>
+  {% endfor %}
+</div>
 <a href="/tv_series/new/" class="button top-margin">New</a>
 <a href="#" id="update-all" class="button top-margin right">
   Update all TV series info

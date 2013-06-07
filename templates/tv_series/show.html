@@ -7,9 +7,12 @@
 <a href="/" class="button">Back</a>
 <a href="/tv_series/edit/?id={{ tv_series.id }}" class="button right">Edit</a>
 <h1>{{ tv_series.title }}</h1>
-{% for s in tv_series.seasons %}
-  <a href="#season-{{ s.id }}" class="button wide">Season {{ s.number }}</a>
-{% endfor %}
+
+<div class="list">
+  {% for s in tv_series.seasons %}
+    <a href="#season-{{ s.id }}" class="item">Season {{ s.number }}</a>
+  {% endfor %}
+</div>
 
 <a href="#" id="update" data-tv-series-id="{{ tv_series.id }}"
    class="button top-margin">
@@ -23,7 +26,7 @@
       I’ve seen this season
     </a>
   </h2>
-  <div class="season episodes">
+  <div class="accordion">
     {% for episode in s.episodes %}
       {{ e.episode(episode) }}
     {% endfor %}
