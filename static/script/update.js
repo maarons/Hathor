@@ -7,16 +7,16 @@ var Update = function () {
   function bump_progress(progress) {
     cur_progress += progress;
     var value = Math.round(cur_progress * 100.0 / num_tv_series);
-    $("#update-progress").progressbar({ value: value });
+    $("#update-progress-bar").width(value + "%");
   }
   bump_progress(0.0);
 
   function check_all_done() {
     if (done_tv_series == num_tv_series) {
       if (errors) {
-        $("#update-error").show();
+        $("#update-error").removeClass("hide");
       } else {
-        $("#update-reload").show();
+        $("#update-reload").removeClass("hide");
       }
     }
   }
@@ -35,20 +35,12 @@ var Update = function () {
 
   $("#update-reload, #update-error").click(function(event) {
     event.preventDefault();
-    window.location.replace(window.location.href);
+    window.location.reload(true);
   });
 
   function show_dialog() {
-    $("#update-dialog").dialog({
-      modal: true,
-      resizable: false,
-      draggable: false,
-      closeOnEscape: false,
-      // Prevents the dialog from being closed.
-      beforeClose: function(event, _) {
-        event.preventDefault();
-      },
-    });
+    $("#update-dialog").removeClass("hide");
+    $("#update-overlay").removeClass("hide");
   }
 
   $("#update").click(function(event) {
