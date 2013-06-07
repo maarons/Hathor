@@ -192,7 +192,7 @@ function WikipediaLib(episodes_article, season_keyword, episodes_keyword,
         (!this.templateName.match(/^dts$/)))
       throw "This is not a start date template";
 
-    var params = this.unnamedParams, year, month = "1", day = "1";
+    var params = this.unnamedParams, year, month = null, day = null;
     if (params.length < 1)
       throw "Not enough parameters";
     year = params[0];
@@ -203,7 +203,13 @@ function WikipediaLib(episodes_article, season_keyword, episodes_keyword,
     this.month = month;
     this.day = day;
     this.toString = function() {
-      return year + "." + month + "." + day;
+      if (day !== null) {
+        return year + "." + month + "." + day;
+      }
+      if (month !== null) {
+        return year + "." + month;
+      }
+      return year;
     }
   }
 
