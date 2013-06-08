@@ -93,6 +93,9 @@ body {
     height: 20em;
     overflow: auto;
     padding: 0 1em;
+    visibility: hidden;
+    /* Delay when hiding */
+    transition: visibility 0s linear 0.3s;
   }
 
   .body {
@@ -111,6 +114,12 @@ body {
       margin: 0.5em 0;
       height: 20em;
       transition: height 0.3s ease-out, margin 0.3s ease-out;
+    }
+
+    .wrap {
+      visibility: visible;
+      /* Immediatelly show when making visible */
+      transition: visibility 0s linear;
     }
   }
 
