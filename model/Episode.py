@@ -95,18 +95,14 @@ class Episode(Base):
         ).all()
         episodes = {}
         for episode in all_episodes:
-            season = episode.season
-            if season.tv_series_id not in episodes:
-                episodes[season.tv_series_id] = []
-            episodes[season.tv_series_id].append(episode)
-
-        ret = []
-        for tv_series_id in episodes:
-            ret.append((
+            tv_series_id = episode.season.tv_series_id
+            if tv_series_id not in episodes:
+                episodes[tv_series_id] = (episode, 0, )
+            episodes[tv_series_id] = (
                 episodes[tv_series_id][0],
-                len(episodes[tv_series_id]) - 1,
-            ))
-        return ret
+                episodes[tv_series_id][1] + 1,
+            )
+        return sorted(episodes.values(), key = lambda t: t[0].air_date)
 
     def get_air_date(self):
         return utils.time.to_string(self.air_date)

@@ -4,7 +4,7 @@
   <h2>Ready episodes:</h2>
   <div class="accordion">
     {% for (episode, c, ) in ready_episodes %}
-      {{ e.episode(episode, full = True, other = c) }}
+      {{ e.episode(episode, full = True, other = c - 1) }}
     {% endfor %}
   </div>
   <h2>Next episodes:</h2>
