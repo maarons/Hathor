@@ -3,17 +3,19 @@
 {% block title %}Hathor{% endblock %}
 
 {% block content %}
+{% include "episodes/ready_and_next.html" %}
+
+<a href="/tv_series/new/" class="button top-margin">New</a>
+<a href="#" id="update-all" class="button top-margin right">
+  Update all TV series info
+</a>
+
 <h1>Your TV series:</h1>
 <div class="list">
   {% for t in tv_series %}
     <a href="/tv_series/?id={{ t.id }}" class="item">{{ t.title }}</a>
   {% endfor %}
 </div>
-<a href="/tv_series/new/" class="button top-margin">New</a>
-<a href="#" id="update-all" class="button top-margin right">
-  Update all TV series info
-</a>
-{% include "episodes/ready_and_next.html" %}
 
 {% include "tv_series/_update.html" %}
 
