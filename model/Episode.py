@@ -6,6 +6,7 @@ from sqlalchemy import and_
 
 from model.Base import Base
 import utils.time
+import utils.amazon
 
 class Episode(Base):
     __tablename__ = "episodes"
@@ -123,3 +124,6 @@ class Episode(Base):
 
     def season_and_number(self):
         return "S{}E{}".format(self.season.number, str(self.number).zfill(2))
+
+    def amazon_episode(self):
+        return utils.amazon.get_episode(self)

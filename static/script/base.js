@@ -57,6 +57,23 @@ $(document).on("click", ".episode .unwatch", function(event) {
   });
 });
 
+$(document).on("click", ".episode", function(event) {
+  if ($(this).hasClass("has-cover")) {
+    return;
+  }
+  $(this).addClass("has-cover");
+  var episode_id = $(this).data("episode-id");
+  var cover = $(this).find(".cover_image");
+  if (cover.length !== 1) {
+    return;
+  }
+  $.getJSON("/episodes/amazon_link/?id=" + episode_id, function(data) {
+    if (data["error"] === false) {
+      cover.append(data["html"]);
+    }
+  });
+});
+
 $(document).on("click", "a.confirm", function(event) {
   if (!confirm("Are you sure?")) {
     event.preventDefault();

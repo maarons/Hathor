@@ -152,6 +152,16 @@ body {
   }
 }
 
+.episode .cover_image {
+  @media (min-width: 40em) {
+    float: right;
+  }
+
+  @media (max-width: 40em) {
+    display: none;
+  }
+}
+
 #update-dialog {
   position: fixed;
   @media (min-width: 40em) {

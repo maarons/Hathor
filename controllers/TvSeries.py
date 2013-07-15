@@ -4,7 +4,6 @@ import templates as t
 import model
 import json
 import cherrypy
-import urllib.parse
 from utils.log import log
 
 class TvSeries():
@@ -52,16 +51,16 @@ class TvSeries():
 
     @safe_access
     def fetch(self, id, _):
-        cherrypy.response.headers['Content-Type'] = "application/javascript"
+        cherrypy.response.headers["Content-Type"] = "application/javascript"
         tv_series = model.TvSeries.get(id)
         metadata = json.loads(tv_series.provider_metadata)
         return t.render("tv_series/fetch.js", tv_series = tv_series,
                         metadata = metadata);
 
     @safe_access
-    @cherrypy.tools.allow(methods=['POST'])
+    @cherrypy.tools.allow(methods=["POST"])
     def update_episodes_info(self, id, data):
-        cherrypy.response.headers['Content-Type'] = "application/json"
+        cherrypy.response.headers["Content-Type"] = "application/json"
         try:
             tv_series = model.TvSeries.get(id)
             tv_series.update_episodes_info(json.loads(data))
@@ -72,6 +71,6 @@ class TvSeries():
 
     @safe_access
     def list_ids(self, _):
-        cherrypy.response.headers['Content-Type'] = "application/json"
+        cherrypy.response.headers["Content-Type"] = "application/json"
         ids = [t.id for t in model.TvSeries.all()]
         return json.dumps(ids).encode("utf-8")

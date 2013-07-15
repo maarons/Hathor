@@ -1,5 +1,5 @@
 {% macro episode(e, full = False, other = None) %}
-<section class="episode-{{ e.id }} episode">
+<section class="episode-{{ e.id }} episode" data-episode-id="{{ e.id }}">
   <h3 class="header">
     {% if full %}
       {{ e.season.tv_series.title }} —
@@ -23,6 +23,7 @@
   </h3>
   <div class="body"><div class="wrap">
     {% if e.available() %}
+      <div class="cover_image"></div>
       <p>
         <a
           href="#"
