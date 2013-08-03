@@ -27,9 +27,10 @@ $("#firefox-install").click(function(event) {
   event.preventDefault();
   var request = navigator.mozApps.install(manifest_path);
   request.onsuccess = function() {
-    alert("MOO!");
+    show_section("success");
   };
   request.onerror = function() {
-    alert(this.error.name);
+    show_section("error");
+    console.log(this.error.name);
   };
 });
