@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Install Hathor{% endblock %}
+
+{% block content %}
+<h1>Install Hathor for Firefox</h1>
+<p id="install-prepare">Preparing installation…</p>
+
+<p id="no-mozapps" class="hide">
+  Your browser doesn’t support installing applications, install a newer Firefox
+  browser and try again.
+</p>
+
+<p id="already-installed" class="hide">
+  You have already installed this application.
+<p>
+
+<p id="error" class="hide">
+  Encountered an error.
+</p>
+
+<a href="#" id="firefox-install" class="hide button">Install</a>
+{% endblock %}
+
+{% block script %}
+<script src="/static/script/firefox_install.js"></script>
+{% endblock %}
+
+<!-- vim: set filetype=jinja sw=2 sts=2 : -->
