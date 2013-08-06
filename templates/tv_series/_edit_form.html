@@ -7,7 +7,7 @@
          id="tv_series_title"/>
 </div>
 <div>
-  <select name="provider_type" class="right">
+  <select id="provider_type" name="provider_type" class="right">
   {% for p in providers %}
     <option
       value="{{ p.type }}"
@@ -16,28 +16,40 @@
   {% endfor %}
   </select>
   <h2>Provider data:</h2>
-  <div>
-    <label for="wikipedia_episodes_article">Episodes list article:</label>
-    <input type="text" name="wikipedia_episodes_article"
-           id="wikipedia_episodes_article"/>
-  <div>
-  <input type="button" class="button" value="reset"
-         id="wikipedia_episodes_article_reset"/>
-  <p>Most likely following options can be left empty:</p>
-  <div>
-    <label for="wikipedia_season_keyword">Season keyword:</label>
-    <input type="text" name="wikipedia_season_keyword"
-           id="wikipedia_season_keyword">
-    <p class="hint">(“season” and “series” are recognised by default)</p>
+  <div id="provider_1">
+    <div>
+      <label for="wikipedia_episodes_article">Episodes list article:</label>
+      <input type="text" name="wikipedia_episodes_article"
+             id="wikipedia_episodes_article"/>
+    </div>
+    <input type="button" class="button" value="reset"
+           id="wikipedia_episodes_article_reset"/>
+    <p>Most likely following options can be left empty:</p>
+    <div>
+      <label for="wikipedia_season_keyword">Season keyword:</label>
+      <input type="text" name="wikipedia_season_keyword"
+             id="wikipedia_season_keyword">
+      <p class="hint">(“season” and “series” are recognised by default)</p>
+    </div>
+    <div>
+      <label for="wikipedia_episodes_keyword">Episodes keyword:</label>
+      <input type="text" name="wikipedia_episodes_keyword"
+             id="wikipedia_episodes_keyword">
+      <p class="hint">
+        (“episodes”, “list of episodes” and “episode list” are recognised by
+        default)
+      </p>
+    </div>
   </div>
-  <div>
-    <label for="wikipedia_episodes_keyword">Episodes keyword:</label>
-    <input type="text" name="wikipedia_episodes_keyword"
-           id="wikipedia_episodes_keyword">
-    <p class="hint">
-      (“episodes”, “list of episodes” and “episode list” are recognised by
-      default)
-    </p>
+  <div id="provider_2">
+    <div>
+      <label for="freebase_tv_series_id">Freebase ID:</label>
+      <input type="text" name="freebase_tv_series_id"
+             id="freebase_tv_series_id"/>
+    </div>
+    <input type="button" class="button" value="hint"
+           id="freebase_id_hint"/>
+    <ul id="freebase_id_hint_list"/>
   </div>
 </div>
 <input id="real-submit" type="submit" value="" class="hide"/>

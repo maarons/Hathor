@@ -26,6 +26,7 @@ static_dirs = [
     "static/style",
     "static/script",
     "static/script/wikipedia",
+    "static/script/freebase",
 ]
 for d in static_dirs:
     p = os.path.abspath(d)

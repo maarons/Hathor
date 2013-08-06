@@ -79,54 +79,80 @@ var Update = function () {
     });
   });
 
+  function bump_progress_single() {
+    var num_actions = 3.0;
+    bump_progress(1.0 / num_actions);
+  }
+
+  function send_data(tv_series_id, tv_series, lib_progress_error) {
+    $.ajax({
+      dataType: "json",
+      url: "/tv_series/update_episodes_info/",
+      data: {
+        id: tv_series_id,
+        data: JSON.stringify(tv_series),
+      },
+      success: function(ret) {
+        bump_progress_single();
+        if (ret === true) {
+          progress_done();
+        } else {
+          lib_progress_error();
+        }
+      },
+      error: lib_progress_error,
+      type: 'POST'
+    });
+  }
+
   function wikipedia(tv_series_id, title, episodes_article, season_keyword,
                      episodes_keyword) {
-    function bump_wikipedia_progress() {
-      var num_actions = 3.0;
-      bump_progress(1.0 / num_actions);
-    }
-
-    bump_wikipedia_progress();
-
-    if (!episodes_article) {
-      progress_error(title);
-      return;
-    }
-
     function lib_progress_error() {
       progress_error(title);
+    }
+
+    bump_progress_single();
+
+    if (!episodes_article) {
+      lib_progress_error();
+      return;
     }
     var lib = WikipediaLib(episodes_article, season_keyword, episodes_keyword,
                            lib_progress_error);
     lib.getTvSeries(function(tv_series) {
-      bump_wikipedia_progress();
+      bump_progress_single();
       if (!tv_series) {
-        progress_error(title);
+        lib_progress_error();
         return;
       }
 
-      $.ajax({
-        dataType: "json",
-        url: "/tv_series/update_episodes_info/",
-        data: {
-          id: tv_series_id,
-          data: JSON.stringify(tv_series.toJSON()),
-        },
-        success: function(ret) {
-          bump_wikipedia_progress();
-          if (ret === true) {
-            progress_done();
-          } else {
-            progress_error(title);
-          }
-        },
-        error: function() {
-          progress_error(title);
-        },
-        type: 'POST'
-      });
+      send_data(tv_series_id, tv_series.toJSON(), lib_progress_error);
     });
   }
 
-  return { wikipedia: wikipedia };
+  function freebase(tv_series_id, title, freebase_id) {
+    function lib_progress_error() {
+      progress_error(title);
+    }
+
+    bump_progress_single();
+
+    if (!freebase_id) {
+      lib_progress_error();
+      return;
+    }
+    var lib = FreebaseLib(freebase_id, lib_progress_error);
+
+    lib.getTvSeries(function(tv_series) {
+      bump_progress_single();
+      if (!tv_series) {
+        lib_progress_error();
+        return;
+      }
+
+      send_data(tv_series_id, tv_series, lib_progress_error);
+    });
+  }
+
+  return { wikipedia: wikipedia, freebase: freebase };
 }();

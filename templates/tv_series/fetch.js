@@ -7,3 +7,11 @@
     "{{ metadata.get('wikipedia_episodes_keyword', '') }}"
   );
 {% endif %}
+
+{% if tv_series.provider_type == 2 %}
+  Update.freebase(
+    {{ tv_series.id }},
+    "{{ tv_series.title }}",
+    "{{ metadata.get('freebase_tv_series_id', '') }}"
+  );
+{% endif %}

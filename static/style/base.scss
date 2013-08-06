@@ -162,6 +162,12 @@ body {
   }
 }
 
+.episode .summary {
+  /* Preserve new line characters. */
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
 #update-dialog {
   position: fixed;
   @media (min-width: 40em) {
@@ -219,4 +225,9 @@ body {
   height: 100%;
   background-color: black;
   opacity: 0.8;
+}
+
+.freebase_hint {
+  text-decoration: none;
+  color: blue;
 }

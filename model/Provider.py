@@ -7,4 +7,5 @@ class Provider():
     def all():
         return map(Provider, [
             { "type": 1, "name": "Wikipedia" },
+            { "type": 2, "name": "Freebase" },
         ])
