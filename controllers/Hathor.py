@@ -20,18 +20,18 @@ class Hathor():
         )
 
     @safe_access
+    def firefox_install(self):
+        return t.render("firefox/install")
+
+    @cherrypy.expose
     def manifest_webapp(self):
         cherrypy.response.headers["Content-Type"] = \
             "application/x-web-app-manifest+json"
         return json.dumps({
             "name": "Hathor",
-            "description": "",
+            "description": "Hathor",
             "version": "1",
         }).encode("utf-8")
-
-    @safe_access
-    def firefox_install(self):
-        return t.render("firefox/install")
 
     # For FB SDK.
     @cherrypy.expose
