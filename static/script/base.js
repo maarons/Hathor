@@ -73,9 +73,3 @@ $(document).on("click", ".episode", function(event) {
     }
   });
 });
-
-$(document).on("click", "a.confirm", function(event) {
-  if (!confirm("Are you sure?")) {
-    event.preventDefault();
-  }
-});

@@ -11,7 +11,8 @@
 
     {% block content %}{% endblock %}
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+    {% include "PressUI/_jquery.html" %}
+    <script src="/static/script/PressUI/confirm.js"></script>
     <script src="https://connect.facebook.net/en_GB/all.js"></script>
     <script type="text/javascript">{% include "fbinit.js" %}</script>
     <script src="/static/script/base.js"></script>
