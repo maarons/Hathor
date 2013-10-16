@@ -1,23 +1,4 @@
-$font-size: 16px;
-$gray1: #F2F7FC; /* light */
-$gray2: #EDEFF4; /* medium */
-$gray3: #D9D9D9; /* dark */
-$blue:  #5B74A8;
-
-@media (min-width: 50em) {
-  body {
-    width: 50em;
-    margin-left: auto;
-    margin-right: auto;
-  }
-}
-
-body {
-  font-size: $font-size;
-  font-family: sans-serif;
-  background-color: white;
-  color: black;
-}
+@import "PressUI/style/layout";
 
 .right {
   float: right;
