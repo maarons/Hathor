@@ -8,11 +8,11 @@
 <a href="/tv_series/edit/?id={{ tv_series.id }}" class="button right">Edit</a>
 <h1>{{ tv_series.title }}</h1>
 
-<div class="list">
+<ul class="list">
   {% for s in tv_series.seasons %}
-    <a href="#season-{{ s.id }}" class="item">Season {{ s.number }}</a>
+    <li class="item"><a href="#season-{{ s.id }}">Season {{ s.number }}</a></li>
   {% endfor %}
-</div>
+</ul>
 
 <a href="#" id="update" data-tv-series-id="{{ tv_series.id }}"
    class="button top-margin">

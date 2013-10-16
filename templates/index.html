@@ -11,11 +11,11 @@
 </a>
 
 <h1>Your TV series:</h1>
-<div class="list">
+<ul class="list">
   {% for t in tv_series %}
-    <a href="/tv_series/?id={{ t.id }}" class="item">{{ t.title }}</a>
+    <li class="item"><a href="/tv_series/?id={{ t.id }}">{{ t.title }}</a></li>
   {% endfor %}
-</div>
+</ul>
 
 {% include "tv_series/_update.html" %}
 

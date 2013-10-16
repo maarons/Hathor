@@ -8,7 +8,7 @@ if [[ $1 == "start" ]]; then
 elif [[ $1 == "stop" ]]; then
     watchman watch-del "${PWD}"
 elif [[ $1 == "rebuild" ]]; then
-    make templates
+    make
 else
     watchman watch-list
     watchman trigger-list "${PWD}"
