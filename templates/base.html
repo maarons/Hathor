@@ -11,10 +11,9 @@
 
     {% block content %}{% endblock %}
 
-    {% include "PressUI/_jquery.html" %}
+    {% include "PressUI/jquery.html" %}
     <script src="/static/script/PressUI/confirm.js"></script>
-    <script src="https://connect.facebook.net/en_GB/all.js"></script>
-    <script type="text/javascript">{% include "fbinit.js" %}</script>
+    {% include "PressUI/facebook.html" %}
     <script src="/static/script/base.js"></script>
     {% block script %}{% endblock %}
   </body>
