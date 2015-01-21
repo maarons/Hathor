@@ -1,7 +1,0 @@
-/.sass-cache
-/db.sqlite3
-*.py[co]
-*.css
-__pycache__
-/config.py
-/PressUI
