@@ -1,0 +1,5 @@
+/.sass-cache
+*.py[co]
+*.css
+__pycache__
+/config.py
