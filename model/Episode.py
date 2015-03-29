@@ -31,3 +31,11 @@ class Episode(ParseObjFB):
         for episode in episodes:
             episode_buckets[episode.season_id].append(episode)
         return episode_buckets
+
+    def watch(self):
+        self.watched = True
+        self.save()
+
+    def unwatch(self):
+        self.watched = False
+        self.save()

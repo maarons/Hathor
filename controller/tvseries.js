@@ -18,8 +18,7 @@ var tvseriesController = function(params) {
     url: '/tv_series.json',
     data: {'objectId': params.objectId},
     success: function(data) {
-      console.log(data);
-      var seasons_list = $.map(
+      var seasonsList = $.map(
         data['seasons'],
         function(season, _) {
           return <span>{'Season ' + season.number}</span>;
@@ -29,8 +28,23 @@ var tvseriesController = function(params) {
         data['seasons'],
         function(season, _) {
           var episodes = data['episodes'][season.objectId];
-          var header = <span>{'Season ' + season.number}</span>;
-          var content = <div>foo</div>;
+          episodes.sort(function(a, b) { return a.number - b.number; });
+          var episodes = $.map(
+            episodes,
+            function(episode, _) {
+              return <Episode
+                key={episode.objectId}
+                objectId={episode.objectId}
+                number={episode.number}
+                title={episode.title}
+                summary={episode.summary}
+                watched={episode.watched}
+                airDate={episode.air_date}
+              />;
+            }
+          );
+          var header = <h2>{'Season ' + season.number}</h2>;
+          var content = <PressAccordion items={episodes}/>;
           return <PressCard
             header={header}
             content={content}
@@ -40,7 +54,7 @@ var tvseriesController = function(params) {
       );
       React.render(
         <div>
-          <PressList items={seasons_list}/>
+          <PressList items={seasonsList}/>
           {seasons}
         </div>,
         $('#content').get(0)

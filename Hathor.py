@@ -15,6 +15,7 @@ import PressUI.cherrypy.Parse
 class Hathor(PressApp):
     def _js_sources(self):
         return [
+            'components/Episode.js',
             'controller/index.js',
             'controller/login.js',
             'controller/tvseries.js',
@@ -46,6 +47,26 @@ class Hathor(PressApp):
             'seasons': list(map(lambda s: s.to_json(), seasons)),
             'episodes': episodes,
         })
+
+    @cherrypy.tools.allow(methods = ['POST'])
+    @safe_access
+    def watch_episode(self, objectId):
+        episode = Episode.get(objectId)
+        try:
+            episode.watch()
+            return self._json(True)
+        except:
+            return self._json(False)
+
+    @cherrypy.tools.allow(methods = ['POST'])
+    @safe_access
+    def unwatch_episode(self, objectId):
+        episode = Episode.get(objectId)
+        try:
+            episode.unwatch()
+            return self._json(True)
+        except:
+            return self._json(False)
 
 if __name__ == '__main__':
     def parse_init():
