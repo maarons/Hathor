@@ -5,7 +5,10 @@ var indexController = function() {
       var tv_series_list = $.map(
         data,
         function(tv_series, _) {
-          var params = {'id': tv_series.objectId};
+          var params = {
+            'objectId': tv_series.objectId,
+            'title': tv_series.title
+          };
           return <PressNavigationLink
             label={tv_series.title}
             uri='/tv_series'

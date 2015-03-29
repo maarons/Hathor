@@ -1,5 +1,4 @@
 from PressUI.cherrypy.Parse import ParseObjFB
-from PressUI.cherrypy.Parse import ParseQuery
 
 class TVSeries(ParseObjFB):
     def __init__(self, **kwargs):
