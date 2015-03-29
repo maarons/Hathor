@@ -18,6 +18,8 @@ class Episode(ParseObjFB):
 
     @staticmethod
     def get_for_seasons(season_ids):
+        if len(season_ids) == 0:
+            return {}
         episode_buckets = {}
         queries = []
         for season_id in season_ids:
