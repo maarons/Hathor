@@ -7,8 +7,11 @@ var Episode = React.createClass({
     title: React.PropTypes.string.isRequired,
     summary: React.PropTypes.string.isRequired,
     watched: React.PropTypes.bool.isRequired,
-    airDate: React.PropTypes.number.isRequired,
-    onChangeWatched: React.PropTypes.func.isRequired,
+    air_date: React.PropTypes.number.isRequired,
+    on_change_watched: React.PropTypes.func.isRequired,
+    tv_series: React.PropTypes.object,
+    season: React.PropTypes.object,
+    extra_title: React.PropTypes.string,
   },
 
   getInitialState: function() {
@@ -33,12 +36,12 @@ var Episode = React.createClass({
   },
 
   updateWatched: function(state) {
-    this.props.onChangeWatched(this.props.objectId, state);
+    this.props.on_change_watched(this.props.objectId, state);
   },
 
   updateAiredState: function() {
     this.setState({
-      'aired': this.props.airDate * 1000 < Date.now()
+      'aired': this.props.air_date * 1000 < Date.now()
     });
   },
 
@@ -67,54 +70,63 @@ var Episode = React.createClass({
       });
     }
 
-    var headerInfo = '';
+    var header_info = '';
     if (!this.state.aired) {
-      headerInfo = 'not available';
+      header_info = 'not available';
     } else if (!this.props.watched) {
-      headerInfo = 'not seen';
+      header_info = 'not seen';
+    }
+    var title = this.props.number + '. ' + this.props.title;
+    if (this.props.tv_series !== undefined && this.props.season !== undefined) {
+      title = (
+        this.props.tv_series.title + ' — S' + this.props.season.number + 'E' +
+        addPadding(this.props.number, 2) + ' — ' + this.props.title
+      );
+    }
+    if (this.props.extra_title !== undefined) {
+      title += this.props.extra_title;
     }
     var header = (
       <span>
-        {this.props.number}{'. '}
-        {this.props.title}
-        <span className='press-right'>{headerInfo}</span>
+        {title}
+        <span className='press-right'>{header_info}</span>
       </span>
     );
-    var watchPart = null;
+    var watch_part = null;
     if (this.props.watched) {
-      watchPart = <PressButton
+      watch_part = <PressButton
         label='I haven’t seen this episode'
         onClick={function() { watchRequest(false); }}
       />
     } else {
-      watchPart = <PressButton
+      watch_part = <PressButton
         label='I’ve seen this episode'
         onClick={function() { watchRequest(true); }}
       />
     }
-    var airDateObj = new Date(this.props.airDate * 1000);
-    var airDate = (
+    var air_date_obj = new Date(this.props.air_date * 1000);
+    var air_date = (
       <span>
-        {addPadding(airDateObj.getUTCMonth() + 1, 2)}/
-        {addPadding(airDateObj.getUTCDate(), 2)}/
-        {addPadding(airDateObj.getUTCFullYear(), 4)}
+        {addPadding(air_date_obj.getUTCMonth() + 1, 2)}/
+        {addPadding(air_date_obj.getUTCDate(), 2)}/
+        {addPadding(air_date_obj.getUTCFullYear(), 4)}
       </span>
     );
     if (this.state.aired) {
-      var datePart = <p>Aired on: {airDate}</p>;
+      var date_part = <p>Aired on: {air_date}</p>;
     } else {
-      var datePart = <p>Will air on: {airDate}</p>;
+      var date_part = <p>Will air on: {air_date}</p>;
     }
-    var summaryPart = <span></span>
+    var summary_part = <span></span>
     if (this.props.summary.length > 0) {
-      summaryPart = <p>Summary: {this.props.summary}</p>;
+      summary_part = <p>Summary: {this.props.summary}</p>;
     }
     var body = (
       <div>
-        <p>{watchPart}</p>
+        <p>{watch_part}</p>
         <p>Episode number: {this.props.number}</p>
-        <p>{datePart}</p>
-        {summaryPart}
+        <p>{date_part}</p>
+        {summary_part}
       </div>
     );
     return this.renderElement(header, body);

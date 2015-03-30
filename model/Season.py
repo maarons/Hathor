@@ -19,6 +19,16 @@ class Season(ParseObjFB):
             .ascending('number').gen_find()
         )
 
+    @staticmethod
+    def get_for_episodes(episodes):
+        season_ids = set([])
+        for episode in episodes:
+            season_ids.add(episode.season_id)
+        return (
+            Season.query_safe().contained_in('objectId', list(season_ids))
+            .find()
+        )
+
     def __updateWatched(self, watched):
         episodes = Episode.get_for_seasons([self.objectId])
         promises = []

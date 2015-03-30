@@ -39,6 +39,7 @@ var indexController = function() {
     'toolbar': <h1>Hathor</h1>,
     'content':
       <div>
+        <ReadyEpisodes/>
         <PressCard
           header={tv_series_header}
           content={tv_series_content}

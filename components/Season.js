@@ -50,8 +50,8 @@ var Season = React.createClass({
           title={episode.title}
           summary={episode.summary}
           watched={episode.watched}
-          airDate={episode.air_date}
-          onChangeWatched={this_.onChangeWatched}
+          air_date={episode.air_date}
+          on_change_watched={this_.onChangeWatched}
         />;
       }
     );

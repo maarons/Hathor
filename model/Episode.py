@@ -1,3 +1,5 @@
+from time import time
+
 from PressUI.cherrypy.Parse import ParseObjFB
 from PressUI.cherrypy.Parse import ParseQuery
 
@@ -21,16 +23,21 @@ class Episode(ParseObjFB):
         if len(season_ids) == 0:
             return {}
         episode_buckets = {}
-        queries = []
         for season_id in season_ids:
-            queries.append(
-                Episode.query_safe().equal_to('season_id', season_id)
-            )
             episode_buckets[season_id] = []
-        episodes = ParseQuery.or_(*queries).find()
+        episodes = (
+            Episode.query_safe().contained_in('season_id', season_ids).find()
+        )
         for episode in episodes:
             episode_buckets[episode.season_id].append(episode)
         return episode_buckets
+
+    @staticmethod
+    def get_ready():
+        return (
+            Episode.query_safe().equal_to('watched', False)
+            .less_than('air_date', time()).find()
+        )
 
     def watch(self):
         self.watched = True

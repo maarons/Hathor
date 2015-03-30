@@ -13,3 +13,13 @@ class TVSeries(ParseObjFB):
     @staticmethod
     def all():
         return TVSeries.query_safe().ascending('title').find()
+
+    @staticmethod
+    def get_for_seasons(seasons):
+        tv_series_ids = set([])
+        for season in seasons:
+            tv_series_ids.add(season.tv_series_id)
+        return (
+            TVSeries.query_safe().contained_in('objectId', list(tv_series_ids))
+            .find()
+        )
