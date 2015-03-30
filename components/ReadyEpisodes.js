@@ -8,7 +8,7 @@ var ReadyEpisodes = React.createClass({
     };
   },
 
-  componentWillMount: function() {
+  componentDidMount: function() {
     this.fetch();
   },
 
