@@ -27,28 +27,11 @@ var tvseriesController = function(params) {
       var seasons = $.map(
         data['seasons'],
         function(season, _) {
-          var episodes = data['episodes'][season.objectId];
-          episodes.sort(function(a, b) { return a.number - b.number; });
-          var episodes = $.map(
-            episodes,
-            function(episode, _) {
-              return <Episode
-                key={episode.objectId}
-                objectId={episode.objectId}
-                number={episode.number}
-                title={episode.title}
-                summary={episode.summary}
-                watched={episode.watched}
-                airDate={episode.air_date}
-              />;
-            }
-          );
-          var header = <h2>{'Season ' + season.number}</h2>;
-          var content = <PressAccordion items={episodes}/>;
-          return <PressCard
-            header={header}
-            content={content}
+          return <Season
             key={season.objectId}
+            objectId={season.objectId}
+            number={season.number}
+            episodes={data['episodes'][season.objectId]}
           />
         }
       );

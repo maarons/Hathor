@@ -16,6 +16,7 @@ class Hathor(PressApp):
     def _js_sources(self):
         return [
             'components/Episode.js',
+            'components/Season.js',
             'controller/index.js',
             'controller/login.js',
             'controller/tvseries.js',
@@ -50,23 +51,29 @@ class Hathor(PressApp):
 
     @cherrypy.tools.allow(methods = ['POST'])
     @safe_access
-    def watch_episode(self, objectId):
+    def watch_episode(self, objectId, watched):
         episode = Episode.get(objectId)
         try:
-            episode.watch()
-            return self._json(True)
+            if watched == 'true':
+                episode.watch()
+            else:
+                episode.unwatch()
+            return self._json({'success': True})
         except:
-            return self._json(False)
+            return self._json({'success': False})
 
     @cherrypy.tools.allow(methods = ['POST'])
     @safe_access
-    def unwatch_episode(self, objectId):
-        episode = Episode.get(objectId)
+    def watch_season(self, objectId, watched):
+        season = Season.get(objectId)
         try:
-            episode.unwatch()
-            return self._json(True)
+            if watched == 'true':
+                season.watch()
+            else:
+                season.unwatch()
+            return self._json({'success': True})
         except:
-            return self._json(False)
+            return self._json({'success': False})
 
 if __name__ == '__main__':
     def parse_init():

@@ -8,10 +8,11 @@ var Episode = React.createClass({
     summary: React.PropTypes.string.isRequired,
     watched: React.PropTypes.bool.isRequired,
     airDate: React.PropTypes.number.isRequired,
+    onChangeWatched: React.PropTypes.func.isRequired,
   },
 
   getInitialState: function() {
-    return {'watched': true, 'aired': false};
+    return {'aired': false};
   },
 
   componentWillMount: function() {
@@ -27,11 +28,12 @@ var Episode = React.createClass({
   },
 
   componentDidMount: function() {
-    this.setState({
-      'watched': this.props.watched,
-    });
     this.updateAiredState();
     this.setInterval(this.updateAiredState, 1000 * 60);
+  },
+
+  updateWatched: function(state) {
+    this.props.onChangeWatched(this.props.objectId, state);
   },
 
   updateAiredState: function() {
@@ -51,47 +53,43 @@ var Episode = React.createClass({
       }
       return number;
     }
-    var requestBase = {
-      data: {'objectId': this.props.objectId},
-      method: 'POST',
-    };
-    var episode = this;
-    function watch() {
-      $.ajax($.extend({}, requestBase, {
+    var this_ = this;
+    function watchRequest(watched) {
+      $.ajax({
         url: '/watch_episode',
+        data: {'objectId': this_.props.objectId, 'watched': watched},
+        method: 'POST',
         success: function(data) {
-          if (data) {
-            episode.setState({'watched': true});
+          if (data['success']) {
+            this_.updateWatched(watched);
           }
         }
-      }));
-    }
-    function unwatch() {
-      $.ajax($.extend({}, requestBase, {
-        url: '/unwatch_episode',
-        success: function(data) {
-          if (data) {
-            episode.setState({'watched': false});
-          }
-        }
-      }));
+      });
     }
 
+    var headerInfo = '';
+    if (!this.state.aired) {
+      headerInfo = 'not available';
+    } else if (!this.props.watched) {
+      headerInfo = 'not seen';
+    }
     var header = (
       <span>
         {this.props.number}{'. '}
         {this.props.title}
+        <span className='press-right'>{headerInfo}</span>
       </span>
     );
-    if (this.state.watched) {
-      var watchPart = <PressButton
+    var watchPart = null;
+    if (this.props.watched) {
+      watchPart = <PressButton
         label='I haven’t seen this episode'
-        onClick={unwatch}
+        onClick={function() { watchRequest(false); }}
       />
     } else {
-      var watchPart = <PressButton
+      watchPart = <PressButton
         label='I’ve seen this episode'
-        onClick={watch}
+        onClick={function() { watchRequest(true); }}
       />
     }
     var airDateObj = new Date(this.props.airDate * 1000);
