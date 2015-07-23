@@ -93,7 +93,9 @@ var Episode = React.createClass({
       </span>
     );
     var watch_part = null;
-    if (this.props.watched) {
+    if (!this.state.aired) {
+      watch_part = <span/>;
+    } else if (this.props.watched) {
       watch_part = <PressButton
         label='I haven’t seen this episode'
         onClick={function() { watchRequest(false); }}
