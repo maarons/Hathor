@@ -40,6 +40,7 @@ var indexController = function() {
     'content':
       <div>
         <ReadyEpisodes/>
+        <NextEpisodes/>
         <PressCard
           header={tv_series_header}
           content={tv_series_content}

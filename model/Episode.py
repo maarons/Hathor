@@ -39,6 +39,19 @@ class Episode(ParseObjFB):
             .less_than('air_date', time()).find()
         )
 
+    @staticmethod
+    def get_next():
+        episodes = Episode.query_safe().greater_than('air_date', time()).find()
+        next_episodes = {}
+        for episode in episodes:
+            if (
+                episode.season_id not in next_episodes or
+                next_episodes[episode.season_id].air_date >
+                episode.air_date
+            ):
+                next_episodes[episode.season_id] = episode
+        return next_episodes.values()
+
     def watch(self):
         self.watched = True
         self.save()

@@ -16,6 +16,7 @@ class Hathor(PressApp):
     def _js_sources(self):
         return [
             'components/Episode.js',
+            'components/NextEpisodes.js',
             'components/Season.js',
             'components/ReadyEpisodes.js',
             'controller/index.js',
@@ -50,10 +51,7 @@ class Hathor(PressApp):
             'episodes': episodes,
         })
 
-    @cherrypy.tools.allow(methods = ['GET'])
-    @safe_access
-    def ready_episodes_json(self):
-        episodes = Episode.get_ready()
+    def __with_seasons_and_tv_series(self, episodes):
         seasons = Season.get_for_episodes(episodes)
         tv_series = TVSeries.get_for_seasons(seasons)
         def process(elements):
@@ -66,6 +64,18 @@ class Hathor(PressApp):
             'seasons': process(seasons),
             'tv_series': process(tv_series),
         })
+
+    @cherrypy.tools.allow(methods = ['GET'])
+    @safe_access
+    def ready_episodes_json(self):
+        episodes = Episode.get_ready()
+        return self.__with_seasons_and_tv_series(episodes)
+
+    @cherrypy.tools.allow(methods = ['GET'])
+    @safe_access
+    def next_episodes_json(self):
+        episodes = Episode.get_next()
+        return self.__with_seasons_and_tv_series(episodes)
 
     @cherrypy.tools.allow(methods = ['POST'])
     @safe_access

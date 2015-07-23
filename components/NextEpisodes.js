@@ -1,4 +1,4 @@
-var ReadyEpisodes = React.createClass({
+var NextEpisodes = React.createClass({
   getInitialState: function() {
     return {
       'episodes': {},
@@ -16,7 +16,7 @@ var ReadyEpisodes = React.createClass({
     var this_ = this;
     press_hide_accordion_under_element(this);
     $.ajax({
-      url: '/ready_episodes.json',
+      url: '/next_episodes.json',
       success: function(data) {
         this_.setState({
           'loaded': true,
@@ -38,41 +38,20 @@ var ReadyEpisodes = React.createClass({
 
   render: function() {
     var this_ = this;
-    var header = <h1>Ready episodes:</h1>;
+    var header = <h1>Next episodes:</h1>;
     var content = null;
     if (!this.state.loaded) {
       content = <PressLoadingAnimation/>;
     } else {
-      var latest_episodes = {};
-      var episode_counts = {};
-      $.each(
-        this_.state.episodes,
-        function(_, episode) {
-          var tv_series_id = (
-            this_.state.seasons[episode.season_id].tv_series_id
-          );
-          var latest = !(tv_series_id in latest_episodes);
-          if (!latest) {
-            latest = latest_episodes[tv_series_id].air_date < episode.air_date;
-          }
-          if (latest) {
-            latest_episodes[tv_series_id] = episode;
-          }
-          if (!(tv_series_id in episode_counts)) {
-            episode_counts[tv_series_id] = 0;
-          }
-          ++episode_counts[tv_series_id];
-        }
-      );
+      var all_episodes = $.map(this.state.episodes, function(a) { return a; });
+      var next_episodes = all_episodes.sort(function(a, b) {
+        return a.air_date - b.air_date;
+      });
       var episodes = $.map(
-        latest_episodes,
-        function(episode, tv_series_id) {
-          var extra_title = '';
-          if (episode_counts[tv_series_id] > 1) {
-            extra_title = (
-              ' (and ' + (episode_counts[tv_series_id] - 1) + ' other episodes)'
-            );
-          }
+        next_episodes,
+        function(episode) {
+          var season = this_.state.seasons[episode.season_id];
+          var tv_series = this_.state.tv_series[season.tv_series_id];
           return <Episode
             key={episode.objectId}
             objectId={episode.objectId}
@@ -82,9 +61,8 @@ var ReadyEpisodes = React.createClass({
             watched={episode.watched}
             air_date={episode.air_date}
             on_change_watched={this_.onChangeWatched}
-            season={this_.state.seasons[episode.season_id]}
-            tv_series={this_.state.tv_series[tv_series_id]}
-            extra_title={extra_title}
+            season={season}
+            tv_series={tv_series}
           />;
         }
       );
