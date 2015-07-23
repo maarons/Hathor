@@ -35,8 +35,26 @@ var indexController = function() {
       <PressLoadingAnimation id='tv-series-loading-animation'/>
     </div>
   );
+  var updateAllTVSeries = function() {
+    console.log('update');
+  }
+  var toolbar = (
+    <div>
+      <PressButton
+        label='Update all TV series info'
+        onClick={updateAllTVSeries}
+        className='press-right'
+      />
+      <PressNavigationButton
+        label='New'
+        uri='/new'
+        className='press-right'
+      />
+      <h1>Hathor</h1>
+    </div>
+  );
   return {
-    'toolbar': <h1>Hathor</h1>,
+    'toolbar': toolbar,
     'content':
       <div>
         <ReadyEpisodes/>
