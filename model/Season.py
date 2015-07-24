@@ -20,6 +20,10 @@ class Season(ParseObjFB):
         )
 
     @staticmethod
+    def get_for_tv_series(tv_series_id):
+        return Season.gen_for_tv_series(tv_series_id).prep()
+
+    @staticmethod
     def get_for_episodes(episodes):
         season_ids = set([])
         for episode in episodes:

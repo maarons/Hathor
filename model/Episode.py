@@ -11,9 +11,9 @@ class Episode(ParseObjFB):
                 'season_id': {'type': str},
                 'number': {'type': int},
                 'title': {'type': str},
-                'summary': {'type': str},
+                'summary': {'type': str, 'nullable': True},
                 'watched': {'type': bool},
-                'air_date': {'type': int},
+                'air_date': {'type': int, 'nullable': True},
             },
             kwargs,
         )
@@ -22,15 +22,24 @@ class Episode(ParseObjFB):
     def get_for_seasons(season_ids):
         if len(season_ids) == 0:
             return {}
+        episodes_p = {}
+        for season_id in season_ids:
+            episodes_p[season_id] = Episode.gen_for_season(season_id)
         episode_buckets = {}
         for season_id in season_ids:
-            episode_buckets[season_id] = []
-        episodes = (
-            Episode.query_safe().contained_in('season_id', season_ids).find()
-        )
-        for episode in episodes:
-            episode_buckets[episode.season_id].append(episode)
+            episode_buckets[season_id] = episodes_p[season_id].prep()
         return episode_buckets
+
+    @staticmethod
+    def get_for_season(season_id):
+        return Episode.gen_for_season(season_id).prep()
+
+    @staticmethod
+    def gen_for_season(season_id):
+        return (
+            Episode.query_safe().equal_to('season_id', season_id)
+            .ascending('number').gen_find()
+        )
 
     @staticmethod
     def get_ready():

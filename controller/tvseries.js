@@ -61,7 +61,12 @@ var tvseriesController = function(params) {
           function() { console.log('error'); }
         );
         lib.getTVSeries(function(data) {
-          console.log(data);
+          Util.uploadTVSeriesData(
+            params.objectId,
+            data.toJSON(),
+            function() { console.log('success'); },
+            function() { console.log('error'); }
+          );
         });
       }
     );

@@ -5,9 +5,9 @@ var Episode = React.createClass({
     objectId: React.PropTypes.string.isRequired,
     number: React.PropTypes.number.isRequired,
     title: React.PropTypes.string.isRequired,
-    summary: React.PropTypes.string.isRequired,
+    summary: React.PropTypes.string,
     watched: React.PropTypes.bool.isRequired,
-    air_date: React.PropTypes.number.isRequired,
+    air_date: React.PropTypes.number,
     on_change_watched: React.PropTypes.func.isRequired,
     tv_series: React.PropTypes.object,
     season: React.PropTypes.object,
@@ -41,7 +41,11 @@ var Episode = React.createClass({
 
   updateAiredState: function() {
     this.setState({
-      'aired': this.props.air_date * 1000 < Date.now()
+      'aired': (
+        this.props.air_date !== null &&
+        this.props.air_date !== undefined &&
+        this.props.air_date * 1000 < Date.now()
+      ),
     });
   },
 
@@ -106,21 +110,28 @@ var Episode = React.createClass({
         onClick={function() { watchRequest(true); }}
       />
     }
-    var air_date_obj = new Date(this.props.air_date * 1000);
-    var air_date = (
-      <span>
-        {addPadding(air_date_obj.getUTCMonth() + 1, 2)}/
-        {addPadding(air_date_obj.getUTCDate(), 2)}/
-        {addPadding(air_date_obj.getUTCFullYear(), 4)}
-      </span>
-    );
+    var air_date = <span>Unknown</span>;
+    if (this.props.air_date !== null && this.props.air_date !== undefined) {
+      var air_date_obj = new Date(this.props.air_date * 1000);
+      var air_date = (
+        <span>
+          {addPadding(air_date_obj.getUTCMonth() + 1, 2)}/
+          {addPadding(air_date_obj.getUTCDate(), 2)}/
+          {addPadding(air_date_obj.getUTCFullYear(), 4)}
+        </span>
+      );
+    }
     if (this.state.aired) {
       var date_part = <p>Aired on: {air_date}</p>;
     } else {
       var date_part = <p>Will air on: {air_date}</p>;
     }
     var summary_part = <span></span>
-    if (this.props.summary.length > 0) {
+    if (
+      this.props.summary !== null &&
+      this.props.summary !== undefined &&
+      this.props.summary.length > 0
+    ) {
       summary_part = <p>Summary: {this.props.summary}</p>;
     }
     var body = (
