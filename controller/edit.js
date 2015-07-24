@@ -16,10 +16,8 @@ var editController = function(params) {
             objectId={tv_series.objectId}
             submitLabel='Update'
           />
-          <PressNavigationButton
+          <PressButton
             label='Delete'
-            uri='/delete'
-            params={{'objectId': params.objectId}}
             className='press-left'
             onClick={deleteTVSeries}
           />
@@ -34,7 +32,7 @@ var editController = function(params) {
     dataType: 'json',
   });
 
-  function deleteTVSeries(uri, params) {
+  function deleteTVSeries() {
     if (confirm('Are you sure?')) {
       $.ajax({
         url: '/delete.json',

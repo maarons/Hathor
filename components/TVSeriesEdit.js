@@ -3,6 +3,11 @@ var TVSeriesEdit = React.createClass({
     objectId: React.PropTypes.string.isRequired,
     title: React.PropTypes.string.isRequired,
     wikipediaArticle: React.PropTypes.string.isRequired,
+    submitLabel: React.PropTypes.string.isRequired,
+  },
+
+  getInitialState: function() {
+    return {'wikipediaArticle': this.props.wikipediaArticle};
   },
 
   processData: function(data) {
@@ -23,6 +28,12 @@ var TVSeriesEdit = React.createClass({
 
   handleError: function(ret) {
     return 'Save failed';
+  },
+
+  resetWikipediaTitle: function() {
+    this.setState({
+      'wikipediaArticle': 'List of ' + this.props.title + ' episodes',
+    });
   },
 
   render: function() {
@@ -47,8 +58,14 @@ var TVSeriesEdit = React.createClass({
         <PressFormInput
           label='Wikipedia article'
           name='wikipedia_article'
-          value={this.props.wikipediaArticle}
+          value={this.state.wikipediaArticle}
         />
+        <PressButton
+          label='Reset Wikipedia title'
+          className='press-left'
+          onClick={this.resetWikipediaTitle}
+        />
+        <div className='press-clear'></div>
       </PressForm>
     );
   }
