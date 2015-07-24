@@ -50,6 +50,10 @@ var tvseriesController = function(params) {
     dataType: 'json',
   });
 
+  var updateTVSeries = function() {
+    console.log('update');
+  }
+
   var toolbar = (
     <div>
       <PressNavigationButton
@@ -62,6 +66,11 @@ var tvseriesController = function(params) {
         uri='/edit'
         params={{'objectId': params.objectId}}
         className='press-right'
+      />
+      <PressButton
+        label='Update TV series'
+        className='press-right'
+        onClick={updateTVSeries}
       />
       <h1 id='header'>{params.title}</h1>
     </div>

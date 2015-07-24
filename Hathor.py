@@ -26,6 +26,7 @@ class Hathor(PressApp):
             'controller/new.js',
             'controller/tvseries.js',
             'controller/uri_map.js',
+            'lib/WikipediaLib.js',
         ]
 
     @cherrypy.tools.allow(methods = ['GET'])
