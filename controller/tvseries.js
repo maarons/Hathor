@@ -57,6 +57,12 @@ var tvseriesController = function(params) {
         uri='/'
         className='press-right'
       />
+      <PressNavigationButton
+        label='Edit'
+        uri='/edit'
+        params={{'objectId': params.objectId}}
+        className='press-right'
+      />
       <h1 id='header'>{params.title}</h1>
     </div>
   );

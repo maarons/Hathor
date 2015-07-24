@@ -20,6 +20,7 @@ class Hathor(PressApp):
             'components/Season.js',
             'components/ReadyEpisodes.js',
             'components/TVSeriesEdit.js',
+            'controller/edit.js',
             'controller/index.js',
             'controller/login.js',
             'controller/new.js',
@@ -104,6 +105,40 @@ class Hathor(PressApp):
             return self._json({'success': True})
         except:
             return self._json({'success': False})
+
+    @cherrypy.tools.allow(methods = ['POST'])
+    @safe_access
+    def save_json(
+        self,
+        title,
+        wikipedia_article,
+        objectId = None,
+    ):
+        if objectId is not None:
+            tv_series = TVSeries.get_safe(objectId)
+        else:
+            tv_series = TVSeries()
+        tv_series.title = title.strip()
+        tv_series.wikipedia_article = wikipedia_article.strip()
+        ret = {'success': True, 'title': title}
+        try:
+            tv_series.save()
+            ret['objectId'] = tv_series.objectId
+        except Exception as e:
+            ret = {'success': False}
+        return self._json(ret)
+
+    @cherrypy.tools.allow(methods = ['GET'])
+    @safe_access
+    def get_json(self, objectId):
+        return self._json(TVSeries.get_safe(objectId).to_json())
+
+    @cherrypy.tools.allow(methods = ['POST'])
+    @safe_access
+    def delete_json(self, objectId):
+        tv_series = TVSeries.get_safe(objectId)
+        tv_series.destroy()
+        return self._json({'success': True})
 
 if __name__ == '__main__':
     def parse_init():

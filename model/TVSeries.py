@@ -6,6 +6,7 @@ class TVSeries(ParseObjFB):
             self,
             {
                 'title': {'type': str},
+                'wikipedia_article': {'type': str}
             },
             kwargs,
         )
