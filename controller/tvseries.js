@@ -51,7 +51,20 @@ var tvseriesController = function(params) {
   });
 
   var updateTVSeries = function() {
-    console.log('update');
+    Util.fetchTVSeries(
+      params.objectId,
+      function(tv_series) {
+        var lib = WikipediaLib(
+          tv_series.wikipedia_article,
+          '',
+          '',
+          function() { console.log('error'); }
+        );
+        lib.getTVSeries(function(data) {
+          console.log(data);
+        });
+      }
+    );
   }
 
   var toolbar = (
@@ -64,7 +77,7 @@ var tvseriesController = function(params) {
       <PressNavigationButton
         label='Edit'
         uri='/edit'
-        params={{'objectId': params.objectId}}
+        params={{'objectId': params.objectId, 'title': params.title}}
         className='press-right'
       />
       <PressButton

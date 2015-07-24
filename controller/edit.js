@@ -1,13 +1,16 @@
 var editController = function(params) {
-  if (params === undefined || params.objectId === undefined) {
+  if (
+    params === undefined ||
+    params.objectId === undefined ||
+    params.title === undefined
+  ) {
     PressNavigation.switchToUri('/');
     return;
   }
 
-  $.ajax({
-    url: '/get.json',
-    data: {'objectId': params.objectId},
-    success: function(tv_series) {
+  Util.fetchTVSeries(
+    params.objectId,
+    function(tv_series) {
       var edit_form = (
         <div>
           <TVSeriesEdit
@@ -25,12 +28,8 @@ var editController = function(params) {
       );
       React.render(edit_form, $('#content').get(0));
       $('#loading-animation').hide();
-    },
-    error: function() {
-      // TODO
-    },
-    dataType: 'json',
-  });
+    }
+  );
 
   function deleteTVSeries() {
     if (confirm('Are you sure?')) {
@@ -61,7 +60,7 @@ var editController = function(params) {
         <PressNavigationButton
           label='Back'
           uri='/tv_series'
-          params={{'objectId': params.objectId}}
+          params={{'objectId': params.objectId, 'title': params.title}}
           className='press-right'
         />
         <h1>Edit TV series</h1>
