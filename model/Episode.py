@@ -3,6 +3,8 @@ from time import time
 from PressUI.cherrypy.Parse import ParseObjFB
 from PressUI.cherrypy.Parse import ParseQuery
 
+from model.TVSeries import TVSeries
+
 class Episode(ParseObjFB):
     def __init__(self, **kwargs):
         ParseObjFB.__init__(
@@ -42,24 +44,58 @@ class Episode(ParseObjFB):
         )
 
     @staticmethod
-    def get_ready():
-        return (
-            Episode.query_safe().equal_to('watched', False)
-            .less_than('air_date', time()).find()
-        )
+    def get_ready_or_next_json(ready = False, next = False):
+        assert ready or next, 'Both ready and next are False'
+        assert not (ready and next), 'Both ready and next are True'
+        from model.Season import Season
+        tv_series_list = TVSeries.query_safe().find()
+        tv_series_list = dict((t.objectId, t) for t in tv_series_list)
+        seasons_list_p = []
+        for tv_series in tv_series_list.values():
+            seasons_list_p.append(Season.gen_for_tv_series(tv_series.objectId))
+        ready_or_next_episodes_p = []
+        seasons_list = {}
+        for seasons_p in seasons_list_p:
+            seasons = seasons_p.prep()
+            for season in seasons:
+                seasons_list[season.objectId] = season
+            query = (
+                Episode.query_safe()
+                .contained_in(
+                    'season_id',
+                    list(map(lambda s: s.objectId, seasons)),
+                )
+                .equal_to('watched', False).ascending('air_date')
+                .limit(11 if ready else 1)
+            )
+            if ready:
+                query = query.less_than('air_date', time())
+            else:
+                query = query.greater_than('air_date', time())
+            ready_or_next_episodes_p.append(query.gen_find())
+        ready_or_next_episodes = {}
+        for episodes_p in ready_or_next_episodes_p:
+            for episode in episodes_p.prep():
+                ready_or_next_episodes[episode.objectId] = episode.to_json()
+        ret = {
+            'episodes': ready_or_next_episodes,
+            'seasons': {},
+            'tv_series': {},
+        }
+        for episode in ready_or_next_episodes.values():
+            season = seasons_list[episode['season_id']]
+            tv_series = tv_series_list[season.tv_series_id]
+            ret['seasons'][season.objectId] = season.to_json()
+            ret['tv_series'][tv_series.objectId] = tv_series.to_json()
+        return ret
 
     @staticmethod
-    def get_next():
-        episodes = Episode.query_safe().greater_than('air_date', time()).find()
-        next_episodes = {}
-        for episode in episodes:
-            if (
-                episode.season_id not in next_episodes or
-                next_episodes[episode.season_id].air_date >
-                episode.air_date
-            ):
-                next_episodes[episode.season_id] = episode
-        return next_episodes.values()
+    def get_ready_json():
+        return Episode.get_ready_or_next_json(ready = True)
+
+    @staticmethod
+    def get_next_json():
+        return Episode.get_ready_or_next_json(next = True)
 
     def watch(self):
         self.watched = True

@@ -58,31 +58,15 @@ class Hathor(PressApp):
             'episodes': episodes,
         })
 
-    def __with_seasons_and_tv_series(self, episodes):
-        seasons = Season.get_for_episodes(episodes)
-        tv_series = TVSeries.get_for_seasons(seasons)
-        def process(elements):
-            data = {}
-            for element in elements:
-                data[element.objectId] = element.to_json()
-            return data
-        return self._json({
-            'episodes': process(episodes),
-            'seasons': process(seasons),
-            'tv_series': process(tv_series),
-        })
-
     @cherrypy.tools.allow(methods = ['GET'])
     @safe_access
     def ready_episodes_json(self):
-        episodes = Episode.get_ready()
-        return self.__with_seasons_and_tv_series(episodes)
+        return self._json(Episode.get_ready_json())
 
     @cherrypy.tools.allow(methods = ['GET'])
     @safe_access
     def next_episodes_json(self):
-        episodes = Episode.get_next()
-        return self.__with_seasons_and_tv_series(episodes)
+        return self._json(Episode.get_next_json())
 
     @cherrypy.tools.allow(methods = ['POST'])
     @safe_access

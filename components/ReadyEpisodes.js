@@ -53,7 +53,7 @@ var ReadyEpisodes = React.createClass({
           );
           var latest = !(tv_series_id in latest_episodes);
           if (!latest) {
-            latest = latest_episodes[tv_series_id].air_date < episode.air_date;
+            latest = latest_episodes[tv_series_id].air_date > episode.air_date;
           }
           if (latest) {
             latest_episodes[tv_series_id] = episode;
@@ -64,14 +64,23 @@ var ReadyEpisodes = React.createClass({
           ++episode_counts[tv_series_id];
         }
       );
+      latest_episodes = $.map(latest_episodes, function(e) { return e; });
+      latest_episodes.sort(function(a, b) {
+        return a.air_date - b.air_date;
+      });
       var episodes = $.map(
         latest_episodes,
-        function(episode, tv_series_id) {
+        function(episode) {
+          var tv_series_id = this_.state.seasons[
+            episode.season_id
+          ].tv_series_id;
           var extra_title = '';
           if (episode_counts[tv_series_id] > 1) {
-            extra_title = (
-              ' (and ' + (episode_counts[tv_series_id] - 1) + ' other episodes)'
-            );
+            var num = (episode_counts[tv_series_id] - 1).toString();
+            if (episode_counts[tv_series_id] > 10) {
+              num = '9+'
+            }
+            extra_title = ' (and ' + num + ' other episodes)';
           }
           return <Episode
             key={episode.objectId}
