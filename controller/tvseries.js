@@ -14,64 +14,20 @@ var tvseriesController = function(params) {
     return;
   }
 
-  $.ajax({
-    url: '/tv_series.json',
-    data: {'objectId': params.objectId},
-    success: function(data) {
-      var seasonsList = $.map(
-        data['seasons'],
-        function(season, _) {
-          return <span>{'Season ' + season.number}</span>;
-        }
-      );
-      var seasons = $.map(
-        data['seasons'],
-        function(season, _) {
-          return <Season
-            key={season.objectId}
-            objectId={season.objectId}
-            number={season.number}
-            episodes={data['episodes'][season.objectId]}
-          />
-        }
-      );
-      React.render(
-        <div>
-          <PressList items={seasonsList}/>
-          {seasons}
-        </div>,
-        $('#content').get(0)
-      );
-      $('#loading-animation').hide();
-    },
-    error: function() {
-      // TODO do something
-    },
-    dataType: 'json',
-  });
-
+  var updateFunction = null;
   var updateTVSeries = function() {
-    Util.fetchTVSeries(
-      params.objectId,
-      function(tv_series) {
-        var lib = WikipediaLib(
-          tv_series.wikipedia_article,
-          '',
-          '',
-          function() { console.log('error'); }
-        );
-        lib.getTVSeries(function(data) {
-          Util.uploadTVSeriesData(
-            params.objectId,
-            data.toJSON(),
-            function() { console.log('success'); },
-            function() { console.log('error'); }
-          );
-        });
-      }
-    );
+    if (updateFunction !== null) {
+      updateFunction();
+    }
   }
-
+  var setUpdateFunction = function(f) {
+    updateFunction = f;
+  }
+  var tvSeries = <TVSeries
+    objectId={params.objectId}
+    title={params.title}
+    setUpdateFunction={setUpdateFunction}
+  />;
   var toolbar = (
     <div>
       <PressNavigationButton
@@ -93,15 +49,9 @@ var tvseriesController = function(params) {
       <h1 id='header'>{params.title}</h1>
     </div>
   );
-  var content = (
-    <div>
-      <div id='content'></div>
-      <PressLoadingAnimation id='loading-animation'/>
-    </div>
-  );
 
   return {
     'toolbar': toolbar,
-    'content': content
+    'content': tvSeries,
   };
 }

@@ -22,6 +22,7 @@ class Hathor(PressApp):
             'components/NextEpisodes.js',
             'components/Season.js',
             'components/ReadyEpisodes.js',
+            'components/TVSeries.js',
             'components/TVSeriesEdit.js',
             'controller/edit.js',
             'controller/index.js',
