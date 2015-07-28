@@ -46,6 +46,7 @@ var TVSeries = React.createClass({
     var afterDone = function(msg) {
       console.log(msg);
       this_.setState({'updateProgress': 100});
+      this_.fetchData();
       setTimeout(function() {
         this_.setState({'isUpdating': false});
       }, 1000);
@@ -74,29 +75,37 @@ var TVSeries = React.createClass({
   },
 
   render: function() {
+    var content = null;
     if (this.state.isLoading) {
-      return <PressLoadingAnimation id='loading-animation'/>;
+      content = <PressLoadingAnimation id='loading-animation'/>;
     } else if (this.state.tvSeriesData === null) {
-      return <div></div>;
+      content = <div></div>;
+    } else {
+      var data = this.state.tvSeriesData;
+      var seasonsList = $.map(
+        data['seasons'],
+        function(season, _) {
+          return <span>{'Season ' + season.number}</span>;
+        }
+      );
+      var seasons = $.map(
+        data['seasons'],
+        function(season, _) {
+          return <Season
+            key={season.objectId}
+            objectId={season.objectId}
+            number={season.number}
+            episodes={data['episodes'][season.objectId]}
+          />
+        }
+      );
+      content = (
+        <div>
+          <PressList items={seasonsList}/>
+          {seasons}
+        </div>
+      );
     }
-    var data = this.state.tvSeriesData;
-    var seasonsList = $.map(
-      data['seasons'],
-      function(season, _) {
-        return <span>{'Season ' + season.number}</span>;
-      }
-    );
-    var seasons = $.map(
-      data['seasons'],
-      function(season, _) {
-        return <Season
-          key={season.objectId}
-          objectId={season.objectId}
-          number={season.number}
-          episodes={data['episodes'][season.objectId]}
-        />
-      }
-    );
     var overlay = null;
     if (this.state.isUpdating) {
       overlay = <PressModalProgressBar
@@ -107,8 +116,7 @@ var TVSeries = React.createClass({
     }
     return (
       <div>
-        <PressList items={seasonsList}/>
-        {seasons}
+        {content}
         {overlay}
       </div>
     );
