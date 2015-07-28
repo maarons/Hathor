@@ -126,6 +126,16 @@ class Hathor(PressApp):
     @safe_access
     def delete_json(self, objectId):
         tv_series = TVSeries.get_safe(objectId)
+        seasons = Season.get_for_tv_series(objectId)
+        episodes = Episode.get_for_seasons(list(map(
+            lambda s: s.objectId,
+            seasons,
+        )))
+        for season_id in episodes:
+            for episode in episodes[season_id]:
+                episode.destroy()
+        for season in seasons:
+            season.destroy()
         tv_series.destroy()
         return self._json({'success': True})
 
