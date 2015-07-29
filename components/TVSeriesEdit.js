@@ -7,7 +7,10 @@ var TVSeriesEdit = React.createClass({
   },
 
   getInitialState: function() {
-    return {'wikipediaArticle': this.props.wikipediaArticle};
+    return {
+      'title': this.props.title,
+      'wikipediaArticle': this.props.wikipediaArticle,
+    };
   },
 
   processData: function(data) {
@@ -32,7 +35,8 @@ var TVSeriesEdit = React.createClass({
 
   resetWikipediaTitle: function() {
     this.setState({
-      'wikipediaArticle': 'List of ' + this.props.title + ' episodes',
+      'title': this.refs.title.getValue(),
+      'wikipediaArticle': 'List of ' + this.refs.title.getValue() + ' episodes',
     });
   },
 
@@ -53,7 +57,8 @@ var TVSeriesEdit = React.createClass({
         <PressFormInput
           label='Title'
           name='title'
-          value={this.props.title}
+          value={this.state.title}
+          ref='title'
         />
         <PressFormInput
           label='Wikipedia article'
